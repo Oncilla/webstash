@@ -64,7 +64,7 @@ int main( int argc, char *argv[] )
     serv_addr.sin_port = htons(portno);
 
     int yes=1;
-    if (setsockopt(listener,SOL_SOCKET,SO_REUSEADDR,&yes,sizeof(int)) == -1) { 
+    if (setsockopt(sockfd,SOL_SOCKET,SO_REUSEADDR,&yes,sizeof(int)) == -1) { 
         perror("setsockopt"); 
         exit(1); 
     }  
