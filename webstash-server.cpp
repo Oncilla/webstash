@@ -63,6 +63,12 @@ int main( int argc, char *argv[] )
     serv_addr.sin_addr.s_addr = INADDR_ANY;
     serv_addr.sin_port = htons(portno);
 
+    int yes=1;
+    if (setsockopt(listener,SOL_SOCKET,SO_REUSEADDR,&yes,sizeof(int)) == -1) { 
+        perror("setsockopt"); 
+        exit(1); 
+    }  
+
     if (bind(sockfd, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0)
     {
         perror("ERROR on binding");
