@@ -283,8 +283,6 @@ void process_download_request(int sock)
         // TODO handle signal
         read_signal(sock);
 
-        cout << length << endl;
-
         // send file
         while(length > 0)
         {
@@ -293,7 +291,6 @@ void process_download_request(int sock)
             send_buffer(buffer,size,sock,true);
             length -= size;
         }
-        cout << length << endl;
         is.close();
 
         cout << " done"<<endl;
