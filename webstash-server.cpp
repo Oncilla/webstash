@@ -167,14 +167,7 @@ void process_show_request(int sock)
     pid_t pid;
     char buffer[BUFFER_SIZE];
 
-    int n = read(sock,buffer,BUFFER_SIZE);
-
-    if (n < 0)
-    {
-        close(sock);
-        perror("ERROR reading from socket");
-        exit(1);
-    }
+    read_buffer(buffer,sock,true);
 
 
     if(pipe(link) == -1)
@@ -222,7 +215,7 @@ void process_remove_request(int sock)
 
     if(status[check_file_name(buffer,BUFFER_SIZE)][0] == status[STATUS_FILE_HEADER_FILE_NAME_NOT_ALLOWED][0])
     {
-	cout << "deleting: bad file name "<<buffer<<endl;
+	    cout << "deleting: bad file name "<<buffer<<endl;
         send_status(STATUS_DELETING_FAILED,sock);
         return;
     }
@@ -247,8 +240,7 @@ void process_upload_request(int sock)
     ofstream  out_file(((*path)+path_stash+buffer).c_str());
     while(file_length > 0)
     {
-        int size = (file_length>BUFFER_SIZE)?BUFFER_SIZE:file_length;
-        read_buffer(buffer,sock,true);
+        int size = read_buffer(buffer,sock,true);
         out_file.write(buffer,size);
         file_length -= size;
     }
@@ -291,19 +283,17 @@ void process_download_request(int sock)
         // TODO handle signal
         read_signal(sock);
 
-        // send file
-        while(length > BUFFER_SIZE)
-        {
-            is.read (buffer,BUFFER_SIZE);
-            send_buffer(buffer,BUFFER_SIZE,sock,true);
-            length -= BUFFER_SIZE;
-        }
+        cout << length << endl;
 
-        if(length > 0)
+        // send file
+        while(length > 0)
         {
-            is.read (buffer,length);
-            send_buffer(buffer,length,sock,true);
+            int size = (BUFFER_SIZE > length)?length:BUFFER_SIZE;
+            is.read (buffer,size);
+            send_buffer(buffer,size,sock,true);
+            length -= size;
         }
+        cout << length << endl;
         is.close();
 
         cout << " done"<<endl;

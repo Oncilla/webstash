@@ -154,7 +154,7 @@ void upload_file(const char* file_name, int sock){
         // TODO handle signal
         read_signal(sock);
 
-        cout << "upload "<< file_name;
+        cout << "upload "<< file_name<< "of length "<< length;
         char buffer[BUFFER_SIZE];
         while(length > BUFFER_SIZE){
             is.read (buffer,BUFFER_SIZE);
